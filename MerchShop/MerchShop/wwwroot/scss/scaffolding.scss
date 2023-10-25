@@ -1,0 +1,53 @@
+﻿body {
+    min-width: 320px;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        word-break: normal;
+        word-wrap: break-word;
+    }
+}
+
+p, b, span, label, address {
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        word-break: normal !important;
+        word-wrap: break-word !important;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.visually-impaired-img {
+    display: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+}
+
+html {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}

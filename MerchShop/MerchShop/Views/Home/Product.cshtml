@@ -1,0 +1,20 @@
+﻿@using IvanovaShop.Models;
+@model ProductModel
+@if (@Model.Result!=0)
+{
+	<div class="">@Model.Message</div>
+}
+else
+{
+	<div class="card product-card">
+		<img src="~/img/@Model.Image" width="200" height="200" />
+		<p>Имя: @Model.Name</p>
+		<p>Цена: @Model.Price</p>
+		<p>Категория: @Model.Category</p>
+		<p>Артикул: @Model.Id </p>
+		@if (!string.IsNullOrEmpty(Model.Description))
+		{
+			<p>Описание: @Model.Description </p>
+		}
+	</div>
+}
