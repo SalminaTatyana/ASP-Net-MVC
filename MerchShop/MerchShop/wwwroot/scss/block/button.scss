@@ -1,0 +1,56 @@
+﻿.button-wrapper {
+    margin: 15px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .primary-btn {
+        margin-right: 10px;
+        width: calc(50% - 10px);
+    }
+
+    &:nth-child(2n) {
+        margin-right: 0;
+    }
+}
+
+.button-wrapper-row {
+    margin: 15px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .primary-btn {
+        margin-right: 10px;
+       width: 50px;
+       max-width: 50px;
+    }
+
+    &:nth-child(2n) {
+        margin-right: 0;
+    }
+}
+
+.primary-btn {
+    border: 5px solid $yellow;
+    border-radius: 5px;
+    background-color: $yellow;
+    padding: 5px 15px;
+    color: $black;
+    font-size: 20px;
+
+    &:hover, &:focus {
+        background-color: $black;
+        color: white;
+    }
+
+    &:disabled {
+        background-color: $disabled;
+        border-color: $disabled;
+    }
+}
+.button-basket-text {
+    color: white;
+}

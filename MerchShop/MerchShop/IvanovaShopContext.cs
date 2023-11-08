@@ -68,6 +68,7 @@ public partial class IvanovaShopContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(250)
                 .IsUnicode(false);
+            entity.Property(e => e.Year).HasColumnType("date");
 
             entity.HasOne(d => d.ProductCtegory).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductCtegoryId)

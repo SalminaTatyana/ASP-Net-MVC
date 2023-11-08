@@ -7,14 +7,59 @@
 else
 {
 	<div class="card product-card">
-		<img src="~/img/@Model.Image" width="200" height="200" />
-		<p>Имя: @Model.Name</p>
-		<p>Цена: @Model.Price</p>
-		<p>Категория: @Model.Category</p>
-		<p>Артикул: @Model.Id </p>
-		@if (!string.IsNullOrEmpty(Model.Description))
-		{
-			<p>Описание: @Model.Description </p>
-		}
+		<img src="~/img/@Model.Product.Image" width="200" height="200" />
+		<div class="product-card-text">
+			<p>Имя: @Model.Product.Name</p>
+			<p>Цена: @Model.Product.Price</p>
+			<p>Артикул: @Model.Product.Id </p>
+			@if (!string.IsNullOrEmpty(Model.Product.Description))
+			{
+				<p>Описание: @Model.Product.Description </p>
+			}
+			@if (!string.IsNullOrEmpty(Model.Product.Appointment))
+			{
+				<p>Назначение: @Model.Product.Appointment </p>
+			}
+			@if (Model.Product.Size != null)
+			{
+				<p>Размер: @Model.Product.Size </p>
+			}
+			@if (Model.Product.Material != null)
+			{
+				<p>Материал: @Model.Product.Material </p>
+			}
+			@if (Model.Product.Gender != null)
+			{
+				<p>Пол: @(Model.Product.Gender == true ? "Женский" : "Мужской") </p>
+			}
+			@if (Model.Product.Weight != null)
+			{
+				<p>Вес: @Model.Product.Weight </p>
+			}
+			@if (Model.Product.Type != null)
+			{
+				<p>Тип: @Model.Product.Type </p>
+			}
+			@if (Model.Product.LockType != null)
+			{
+				<p>Тип замка: @Model.Product.LockType </p>
+			}
+			@if (Model.Product.Genre != null)
+			{
+				<p>Жанр: @Model.Product.Genre </p>
+			}
+			@if (Model.Product.Color != null)
+			{
+				<p>Цвет: @Model.Product.Color </p>
+			}
+			@if (Model.Product.Year != null)
+			{
+				<p>Год: @Model.Product.Year </p>
+			}0
+		</div>
+		<div class="button-wrapper">
+			<button class="primary-btn" asp-action="AddInBasket" asp-controller="Basket" asp-route-id="@Model.Product.Id">В корзину</button>
+			<button class="primary-btn">Купить сейчас</button>
+		</div>
 	</div>
 }

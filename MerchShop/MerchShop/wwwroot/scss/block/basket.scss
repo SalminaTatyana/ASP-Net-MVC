@@ -1,0 +1,54 @@
+﻿.basket-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+
+    .main-counter {
+        position: absolute;
+        top: 15px;
+        left: 35px;
+    }
+
+    svg {
+        width: 35px;
+        height: 35px;
+        margin-right: 25px;
+    }
+
+    #basketSum {
+        margin-left: 5px;
+        color: $yellow;
+
+        &:after {
+            content: "\20BD";
+        }
+    }
+}
+.basket-card-pay {
+    width: calc(30% - 30px);
+    order: 2;
+    position: sticky;
+    top:50%;
+    right:0;
+    color: white;
+    margin-left: 30px;
+    p {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 5px;
+        span {
+            margin-left: auto;
+            display: block;
+        }
+    }
+}
+
+.basket {
+    .card-list {
+        align-items: flex-start;
+    }
+}
+
+

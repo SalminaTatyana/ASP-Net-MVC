@@ -1,25 +1,115 @@
 ﻿@using IvanovaShop.Models;
-@model List<ProductModel>
+
+@model AllProductsData
 @{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Магазин";
 }
-
-<div class="text-center">
-    @if (Model!=null)
-    {
-        <div class="card-list">
-        @foreach (var item in Model)
-        {
-                <a class="card" asp-action="Product" asp-controller="Home" asp-route-id="@item.Id">
-                <img src="~/img/@item.Image" width="100" height="100"/>
-                <p>Имя: @item.Name</p>
-                <p>Цена: @item.Price</p>
-                <p>Категория: @item.Category</p>
-                <p>Артикул: @item.Id </p>
-            </a>
-        }
-        </div>
-
-    }
-    
+<div class="main-img-bg">
+	<img src="~/img/bg.jpg" alt="Баннер" />
 </div>
+<div class="content-wrapper text-center w-80 m-a">
+
+	@if (Model != null)
+	{
+		<div class="filter">
+			@foreach (var item in Model.Categories)
+			{
+				<button class="filter-item">@item.Name</button>
+			}
+		</div>
+		<div class="card-list home-card-list">
+			@foreach (var item in Model.Products)
+			{
+				<div class="card">
+					<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Id">
+						<div class="card-img">
+							<img src="~/img/@item.Image" width="100" height="100" />
+
+						</div>
+						<p>Имя: @item.Name</p>
+						<p>Цена: @item.Price</p>
+						<p>Артикул: @item.Id </p>
+					</a>
+					<div class="button-wrapper" id="buttonWrapper@(item.Id)">
+						@if (Model.basket != null)
+						{
+							if (Model.basket.Contains(item))
+							{
+								<div class="button-wrapper-row"><button data-id="@item.Id" class="primary-btn" onclick="removeOutBasket(@item.Id)">-</button><p class="button-basket-text">Уже в корзине</p><button data-id="@item.Id" class="primary-btn" onclick="addInBasket(@item.Id)">+</button></div>
+							}
+							else
+							{
+								<button class="primary-btn" data-id="@item.Id" type="button" onclick="addInBasket(@item.Id)">В корзину</button>
+								<button class="primary-btn">Купить сейчас</button>
+							}
+						}
+						
+					</div>
+				</div>
+			}
+		</div>
+
+	}
+	else
+	{
+		<div class="no-data-msg"> Товары не найдены</div>
+	}
+
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+
+	function addInBasket(id) {
+		$.ajax({
+			url: '@Url.Action("AddInBasketView","Basket")',
+			type: 'POST',
+			data: { 'id': id },
+
+			success: function (data) {
+				if (data != null) {
+					$('#buttonWrapper' + id).html(data);
+					$.ajax({
+						url: '@Url.Action("GetBasketCount","Basket")',
+						type: 'Get',
+
+						success: function (data) {
+							if (data != null) {
+								$('#basketCount').html(data);
+							}
+
+						}
+					});
+				}
+
+			}
+		});
+	}
+	function removeOutBasket(id) {
+		$.ajax({
+			url: '@Url.Action("RemoveOutBasketView","Basket")',
+			type: 'POST',
+			data: { 'id': id },
+
+			success: function (data) {
+				if (data != null) {
+					$('#buttonWrapper' + id).html(data);
+					$.ajax({
+						url: '@Url.Action("GetBasketCount","Basket")',
+						type: 'Get',
+
+						success: function (data) {
+							if (data != null) {
+								$('#basketCount').html(data);
+							}
+
+						}
+					});
+					
+				}
+
+			}
+		});
+	}
+
+</script>

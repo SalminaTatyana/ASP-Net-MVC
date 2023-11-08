@@ -10,7 +10,9 @@ builder.Services.AddDbContext<IvanovaShop.IvanovaShopContext>(options => options
 var services = builder.Services;
 services.AddControllersWithViews().AddRazorRuntimeCompilation().AddSessionStateTempDataProvider();
 services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +29,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

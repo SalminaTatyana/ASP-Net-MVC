@@ -1,6 +1,8 @@
-﻿using IvanovaShop.Models;
+﻿using IvanovaShop;
+using IvanovaShop.Models;
 using MerchShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace MerchShop.Controllers
@@ -9,48 +11,36 @@ namespace MerchShop.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private List<ProductModel> _product;
-        public HomeController(ILogger<HomeController> logger)
+        private IvanovaShopContext _db;
+        public HomeController(ILogger<HomeController> logger, IvanovaShopContext db)
         {
             _logger = logger;
-            _product = new List<ProductModel>()
-            {
-                new ProductModel(1,"Футболка Белая Давид",1000,"David.jpg","Одежда","Ткань «двухнитка» — тепло в холодное время года и не жарко в теплые дни. Модель свободной посадки (оверсайз) выглядит комфортно и стильно."),
-                new ProductModel(2,"Футболка Черная Давид",1500,"tshortBlack.jpg","Одежда","Черная футболка David из мягкого натурального премиального хлопка. Модель выполнена в однотонной расцветке, имеет традиционный силуэт, прямой крой и круглый эластичный ворот. На груди и спине расположены принты статуи Микеланджело - Давид в образе скейтбордиста."),
-                new ProductModel(3,"Футболка Черная Логотип",1200,"logoBlack.jpg","Одежда"),
-                new ProductModel(4,"Футболка Белая Логотип",1300,"LogoWhite.jpg","Одежда"),
-                new ProductModel(5,"Футболка Белая MSF",1400,"1.jpg","Одежда"),
-                new ProductModel(6,"Футболка Черная MSF",1100,"1.jpg","Одежда"),
-                new ProductModel(7,"Брелока квадрат",200,"1.jpg","Аксессуары"),
-                new ProductModel(8,"Брелока прямоугольник",300,"1.jpg","Аксессуары"),
-                new ProductModel(9,"Брелока круг",320,"1.jpg","Аксессуары"),
-                new ProductModel(10,"Брелока сердце",400,"1.jpg","Аксессуары"),
-                new ProductModel(11,"Набор наклеек А4",150,"1.jpg","Наклейки"),
-                new ProductModel(12,"Набор наклеек А5",120,"1.jpg","Наклейки"),
-                new ProductModel(13,"Наклейки MSF",50,"1.jpg","Наклейки"),
-                new ProductModel(14,"Набор виниловых наклеек",50,"1.jpg","Наклейки"),
-                new ProductModel(15,"Музыкальный диск Гештальт",50,"1.jpg","Музыка"),
-            };
+            _db = db;
+           
         }
 
         public IActionResult Index()
         {
-            return View(_product);
+			if (HttpContext.Session.Get<Basket>("Basket") == null)
+				HttpContext.Session.Set<Basket>("Basket", new Basket());
+			var products = _db.Products.ToList();
+            var categories = _db.Categories.ToList();
+            AllProductsData model = new AllProductsData() { Products=products,Categories=categories,basket= HttpContext.Session.Get<Basket>("Basket") };
+            return View(model);
         }
-        public IActionResult Product(int id)
+        public async Task<IActionResult> Product(int id)
         {
-            ProductModel product = _product.FirstOrDefault(x => x.Id == id);
+            var product =  await _db.Products.Where(s=>s.Id==id).SingleOrDefaultAsync();
             if (product!=null)
             {
-                product.Result =0;
-                return View(product);
+                ProductModel model = new ProductModel() {Product= product, Result = 0 };
+                return View(model);
             }
             else
             {
-                product = new ProductModel();
+                ProductModel model = new ProductModel() { Result = -1, Message = "Товар не найден" };
 
-				product.Result = -1;
-                product.Message = "Товар не найден";
-                return View(product);
+                return View(model);
 
             }
         }

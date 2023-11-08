@@ -35,5 +35,7 @@ public partial class Product
 
     public string Color { get; set; }
 
+    public DateTime? Year { get; set; }
+
     public virtual Category ProductCtegory { get; set; }
 }

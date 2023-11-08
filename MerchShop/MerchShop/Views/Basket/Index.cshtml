@@ -1,0 +1,70 @@
+﻿@model IvanovaShop.Models.Basket
+
+@{
+	ViewData["Title"] = "Корзина";
+}
+<div class="main-img-bg">
+	<img src="~/img/bg.jpg" alt="Баннер" />
+</div>
+<ul class="breadcrumbs">
+	<li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+	<li>
+		<a class="active">@ViewData["Title"]</a>
+	</li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
+
+<div class="content-wrapper text-center w-80 m-a basket">
+
+
+	@if (Model != null && Model.GetBasketCount() > 0)
+	{
+
+		<div class="card-list home-card-list">
+			<div class="basket-card-pay">
+				<button class="primary-btn">Перейти к офромлению</button>
+				<p>Товаров: <span>@Model.GetBasketCount()</span></p>
+
+				<p>К оплате: <span>@Model.Sum</span> </p>
+
+			</div>
+			<div class="w-70">
+				@foreach (var item in Model.Items)
+				{
+					<div class="basket-card">
+						<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Product.Id">
+							<div class="card-img">
+								<img src="~/img/@item.Product.Image" width="100" height="100" />
+
+							</div>
+
+
+
+						</a>
+						<div class="basket-card-text">
+							<p>Имя: @item.Product.Name</p>
+							<p>Цена: @item.Product.Price</p>
+							<p>Артикул: @item.Product.Id </p>
+							<p>Итого: @item.Sum </p>
+							<p>Товаров: <div class="button-wrapper-row"><button data-id="@item.Product.Id" class="primary-btn" onclick="removeOutBasket(@item.Product.Id)" disabled="@(item.Count<2)">-</button><input value="@item.Count" type="number" /> <button data-id="@item.Product.Id" class="primary-btn" onclick="addInBasket(@item.Product.Id)">+</button></div></p>
+						</div>
+						<button class="cart-remove" data-id="@item.Product.Id">
+							<svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10 11V17" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M14 11V17" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M4 7H20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+
+	}
+	else
+	{
+		<div class="no-data-msg">Нет товаров в корзине</div>
+	}
+</div>
