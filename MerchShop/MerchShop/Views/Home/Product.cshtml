@@ -1,5 +1,18 @@
 ﻿@using IvanovaShop.Models;
 @model ProductModel
+@{
+	ViewData["Title"] = Model.Product.Name;
+}
+<div class="main-img-bg">
+	<img src="~/img/bg.jpg" alt="Баннер" />
+</div>
+<ul class="breadcrumbs">
+	<li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+	<li>
+		<a class="active">@ViewData["Title"]</a>
+	</li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
 @if (@Model.Result!=0)
 {
 	<div class="">@Model.Message</div>
@@ -57,9 +70,75 @@ else
 				<p>Год: @Model.Product.Year </p>
 			}0
 		</div>
-		<div class="button-wrapper">
-			<button class="primary-btn" asp-action="AddInBasket" asp-controller="Basket" asp-route-id="@Model.Product.Id">В корзину</button>
-			<button class="primary-btn">Купить сейчас</button>
+		<div class="button-wrapper" id="buttonWrapper@(Model.Product.Id)">
+			@if (Model.basket != null)
+			{
+				if (Model.basket.Contains(Model.Product))
+				{
+					<div class="button-wrapper-row"><button data-id="@Model.Product.Id" class="primary-btn" onclick="removeOutBasket(@Model.Product.Id)">-</button><p class="button-basket-text">Уже в корзине</p><button data-id="@Model.Product.Id" class="primary-btn" onclick="addInBasket(@Model.Product.Id)">+</button></div>
+				}
+				else
+				{
+					<button class="primary-btn" data-id="@Model.Product.Id" type="button" onclick="addInBasket(@Model.Product.Id)">В корзину</button>
+					<button class="primary-btn">Купить сейчас</button>
+				}
+			}
+
 		</div>
 	</div>
 }
+<script>
+
+	function addInBasket(id) {
+		$.ajax({
+			url: '@Url.Action("AddInBasketView","Basket")',
+			type: 'POST',
+			data: { 'id': id },
+
+			success: function (data) {
+				if (data != null) {
+					$('#buttonWrapper' + id).html(data);
+					$.ajax({
+						url: '@Url.Action("GetBasketCount","Basket")',
+						type: 'Get',
+
+						success: function (data) {
+							if (data != null) {
+								$('#basketCount').html(data);
+							}
+
+						}
+					});
+				}
+
+			}
+		});
+	}
+	function removeOutBasket(id) {
+		$.ajax({
+			url: '@Url.Action("RemoveOutBasketView","Basket")',
+			type: 'POST',
+			data: { 'id': id },
+
+			success: function (data) {
+				if (data != null) {
+					$('#buttonWrapper' + id).html(data);
+					$.ajax({
+						url: '@Url.Action("GetBasketCount","Basket")',
+						type: 'Get',
+
+						success: function (data) {
+							if (data != null) {
+								$('#basketCount').html(data);
+							}
+
+						}
+					});
+
+				}
+
+			}
+		});
+	}
+
+</script>

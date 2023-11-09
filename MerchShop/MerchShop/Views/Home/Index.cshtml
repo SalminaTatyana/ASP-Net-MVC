@@ -111,5 +111,30 @@
 			}
 		});
 	}
+	function buy(id) {
+		$.ajax({
+			url: '@Url.Action("RemoveOutBasketView","Basket")',
+			type: 'POST',
+			data: { 'id': id },
 
+			success: function (data) {
+				if (data != null) {
+					$('#buttonWrapper' + id).html(data);
+					$.ajax({
+						url: '@Url.Action("GetBasketCount","Basket")',
+						type: 'Get',
+
+						success: function (data) {
+							if (data != null) {
+								$('#basketCount').html(data);
+							}
+
+						}
+					});
+
+				}
+
+			}
+		});
+	}
 </script>

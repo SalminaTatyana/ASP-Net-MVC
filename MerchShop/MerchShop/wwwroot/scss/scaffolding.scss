@@ -167,6 +167,7 @@ html {
         &::after {
             content: "/";
             margin: 0 0.25rem;
+            color: $yellow;
         }
 
         &:last-of-type::after {
@@ -277,4 +278,52 @@ html {
     font-size: 2rem;
     font-weight: 900;
     color: $yellow;
+}
+
+input {
+    background-color: $black;
+    border: 2px solid white;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin: 5px 15px;
+    &:hover,&:focus {
+        border-color: $yellow;
+    }
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    .label {
+        width: 100%;
+    }
+}
+
+.label-error {
+    display: none;
+    color: red;
+    font-size: 11px;
+    
+    &.active {
+        display: block;
+    }
+}
+#tel {
+    position: relative;
+    padding-left: 30px;
+    
+}
+.form-row {
+    position: relative;
+
+    .telBefore {
+        position: absolute;
+        top: 33px;
+        left: 21px;
+        z-index: 2;
+    }
+}
+ul {
+    list-style:none;
 }

@@ -4,7 +4,9 @@
 	{
 		public Product? Product { get; set; }
         public ProductModel() { }
-		
+		public Basket basket { get; set; }
+
+
 	}
 	public class AllProductsData
 	{

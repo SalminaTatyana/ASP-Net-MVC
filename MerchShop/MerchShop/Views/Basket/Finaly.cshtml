@@ -1,0 +1,64 @@
+﻿@model FinalViewModel
+
+@{
+	ViewData["Title"] = "Оформление заказа";
+}
+
+<div class="main-img-bg">
+	<img src="~/img/bg.jpg" alt="Баннер" />
+</div>
+<ul class="breadcrumbs">
+	<li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+	<li>
+		<a class="active">@ViewData["Title"]</a>
+	</li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
+<div class="content-wrapper text-center w-80 m-a basket" id="BasketItems">
+
+	
+
+
+	@if (Model != null && Model.Basket.GetBasketCount() > 0)
+	{
+
+		<div class="card-list home-card-list">
+			<div class="basket-card-pay">
+			<p>Товаров: <span>@Model.Basket.GetBasketCount()</span></p>
+			<p>К оплате: <span id="totalSum">@Model.Basket.Sum</span> </p>
+			<p>Имя: <span>@Model.FirstName</span></p>
+			<p>Фамилия: <span>@Model.LastName</span></p>
+			<p>Отчество: <span>@Model.Patronymic</span></p>
+			<p>Почта: <span>@Model.Email</span></p>
+			<p>Телефон: <span>@Model.Tel</span></p>
+
+				<a  class="primary-btn w-100" asp-action="Index" asp-controller="Home">На главную</a>
+			</div>
+			<div class="w-70">
+			@foreach (var item in Model.Basket.Items)
+				{
+					<div class="basket-card">
+						<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Product.Id">
+							<div class="card-img">
+								<img src="~/img/@item.Product.Image" width="100" height="100" />
+
+							</div>
+						</a>
+						<div class="basket-card-text">
+							<p>Имя: @item.Product.Name</p>
+							<p>Цена: @item.Product.Price</p>
+							<p>Артикул: @item.Product.Id </p>
+							<p id="total@(item.Product.Id)">Итого: @item.Sum </p>
+							<p>Товаров: @item.Count</p>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+
+	}
+	else
+	{
+		<div class="no-data-msg">Нет товаров в корзине</div>
+	}
+</div>

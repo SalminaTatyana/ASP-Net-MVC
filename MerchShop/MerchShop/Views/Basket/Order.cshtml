@@ -1,0 +1,135 @@
+﻿@model IvanovaShop.Models.Basket
+
+@{
+	ViewData["Title"] = "Оформление заказа";
+}
+
+<div class="main-img-bg">
+	<img src="~/img/bg.jpg" alt="Баннер" />
+</div>
+<ul class="breadcrumbs">
+	<li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+	<li>
+		<a class="active">@ViewData["Title"]</a>
+	</li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
+
+<form class="content-wrapper text-center w-80 m-a basket" id="BasketItems">
+	@if (Model != null && Model.GetBasketCount() > 0)
+	{
+
+		<div class="card-list home-card-list">
+			<div class="basket-card-pay">
+				<p>Товаров: <span>@Model.GetBasketCount()</span></p>
+				<p>К оплате: <span id="totalSum">@Model.Sum</span> </p>
+				<div class="form-row">
+					<label class="label" for="firstName">Имя</label>
+					<input class="form-input" name="firstName" id="firstName" type="text" required placeholder="Имя" oninput="removeLable($('#labelErrorFirstName'))" />
+					<label id="labelErrorFirstName" class="label-error" for="firstName"></label>
+				</div>
+				<div class="form-row">
+					<label class="label" for="lastName">Фамилия</label>
+					<input class="form-input" name="lastName" id="lastName" type="text" required placeholder="Фамилия" oninput="removeLable($('#labelErrorLastName'))" />
+					<label id="labelErrorLastName" class="label-error" for="lastName"></label>
+
+				</div>
+				<div class="form-row">
+					<label class="label" for="patrinymic">Отчество</label>
+					<input class="form-input" name="patrinymic" id="patrinymic" type="text" placeholder="Отчество" />
+				</div>
+				<div class="form-row">
+					<label class="label" for="email">Почта</label>
+					<input class="form-input" name="email" id="email" type="email" placeholder="ex@mail.ru" />
+				</div>
+				<div class="form-row">
+					<label class="label" for="tel">Телефон</label>
+					<span class="telBefore">+7</span><input class="form-input" name="tel" id="tel" type="tel" required placeholder="999 999 99 99" oninput="removeLable($('#labelErrorTel'))" />
+					<label id="labelErrorTel" class="label-error" for="tel"></label>
+
+				</div>
+				<button type="button" class="primary-btn w-100" onclick="validation()">Оформить</button>
+			</div>
+			<div class="w-70">
+				@foreach (var item in Model.Items)
+				{
+					<div class="basket-card">
+						<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Product.Id">
+							<div class="card-img">
+								<img src="~/img/@item.Product.Image" width="100" height="100" />
+
+							</div>
+						</a>
+						<div class="basket-card-text">
+							<p>Имя: @item.Product.Name</p>
+							<p>Цена: @item.Product.Price</p>
+							<p>Артикул: @item.Product.Id </p>
+							<p id="total@(item.Product.Id)">Итого: @item.Sum </p>
+							<p>Товаров: @item.Count</p>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+
+	}
+	else
+	{
+		<div class="no-data-msg">Нет товаров в корзине</div>
+	}
+
+
+</form>
+<script>
+
+	function validation() {
+		let firstName = $('#firstName').val();
+		let lastName = $('#lastName').val();
+		let patrinymic = $('#patrinymic').val();
+		let email = $('#email').val();
+		let tel = $('#tel').val();
+		if (firstName.length < 1) {
+			$('#labelErrorFirstName').html('Обязательное поле');
+			$('#labelErrorFirstName').addClass('active');
+		}
+		if (lastName.length < 1) {
+			$('#labelErrorLastName').html('Обязательное поле');
+			$('#labelErrorLastName').addClass('active');
+		}
+		if (tel.length < 1) {
+			$('#labelErrorTel').html('Обязательное поле');
+			$('#labelErrorTel').addClass('active');
+		}
+		if (firstName.length > 0 && lastName.length > 0 && tel.length > 0) {
+			var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+
+
+			if (tel.length != 10 || !re.test(tel)) {
+				$('#labelErrorTel').html('Неверный формат номера.');
+				$('#labelErrorTel').addClass('active');
+			}
+			else {
+				$.ajax({
+					url: '@Url.Action("Finaly","Basket")',
+					type: 'POST',
+					data: {
+						"firstName": firstName,
+						"lastName": lastName,
+						"patrinymic": patrinymic,
+						"email": email,
+						"tel": tel,
+
+					},
+
+					success: function (data) {
+						$('main').html(data);
+
+					}
+				});
+			}
+		}
+	}
+	function removeLable(e) {
+		$(e).removeClass('active');
+	}
+</script>

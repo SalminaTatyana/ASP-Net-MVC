@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IvanovaShop.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 
 namespace IvanovaShop.Models
 {
@@ -58,7 +60,7 @@ namespace IvanovaShop.Models
 			{
 				if (item.SingleOrDefault().Count > 1)
 				{
-					item.SingleOrDefault().Count-=1;
+					item.SingleOrDefault().Count -= 1;
 					item.SingleOrDefault().UpdateTotalSum();
 				}
 				else
@@ -78,6 +80,7 @@ namespace IvanovaShop.Models
 			if (Contains(product))
 			{
 				Items.Remove(Items.Where(s => s.Product.Id == product.Id).SingleOrDefault());
+				UpdateTotalSum();
 			}
 
 		}
@@ -102,4 +105,16 @@ namespace IvanovaShop.Models
 		}
 
 	}
+
+
+
+}
+public class FinalViewModel
+{ 
+	public Basket Basket { get; set; } 
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
+	public string Patronymic { get; set; }
+	public string Email { get; set; }
+	public string Tel { get; set; }
 }

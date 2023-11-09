@@ -30,10 +30,12 @@ namespace MerchShop.Controllers
         }
         public async Task<IActionResult> Product(int id)
         {
-            var product =  await _db.Products.Where(s=>s.Id==id).SingleOrDefaultAsync();
+			if (HttpContext.Session.Get<Basket>("Basket") == null)
+				HttpContext.Session.Set<Basket>("Basket", new Basket());
+			var product =  await _db.Products.Where(s=>s.Id==id).SingleOrDefaultAsync();
             if (product!=null)
             {
-                ProductModel model = new ProductModel() {Product= product, Result = 0 };
+                ProductModel model = new ProductModel() {Product= product, Result = 0, basket = HttpContext.Session.Get<Basket>("Basket") };
                 return View(model);
             }
             else

@@ -473,6 +473,7 @@ html {
 .breadcrumbs li::after {
   content: "/";
   margin: 0 0.25rem;
+  color: #ffe401;
 }
 .breadcrumbs li:last-of-type::after {
   content: "";
@@ -576,6 +577,54 @@ html {
   font-size: 2rem;
   font-weight: 900;
   color: #ffe401;
+}
+
+input {
+  background-color: #242323;
+  border: 2px solid white;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 10px;
+  margin: 5px 15px;
+}
+input:hover, input:focus {
+  border-color: #ffe401;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+.form-row .label {
+  width: 100%;
+}
+
+.label-error {
+  display: none;
+  color: red;
+  font-size: 11px;
+}
+.label-error.active {
+  display: block;
+}
+
+#tel {
+  position: relative;
+  padding-left: 30px;
+}
+
+.form-row {
+  position: relative;
+}
+.form-row .telBefore {
+  position: absolute;
+  top: 33px;
+  left: 21px;
+  z-index: 2;
+}
+
+ul {
+  list-style: none;
 }
 
 .card-list {
@@ -766,7 +815,7 @@ html {
   width: calc(30% - 30px);
   order: 2;
   position: sticky;
-  top: 50%;
+  top: 100px;
   right: 0;
   color: white;
   margin-left: 30px;
