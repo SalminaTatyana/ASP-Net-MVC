@@ -1,0 +1,38 @@
+﻿@model IvanovaShop.Models.AllProductsData
+
+@if (Model.Products!=null&&Model.Products.Count > 0)
+{
+	@foreach (var item in Model.Products)
+	{
+		<div class="card">
+			<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Id">
+				<div class="card-img">
+					<img src="~/img/@item.Image" width="100" height="100" />
+
+				</div>
+				<p>Имя: @item.Name</p>
+				<p>Цена: @item.Price</p>
+				<p>Артикул: @item.Id </p>
+			</a>
+			<div class="button-wrapper" id="buttonWrapper@(item.Id)">
+				@if (Model.basket != null)
+				{
+					if (Model.basket.Contains(item))
+					{
+						<div class="button-wrapper-row"><button data-id="@item.Id" class="primary-btn" onclick="removeOutBasket(@item.Id)">-</button><p class="button-basket-text">Уже в корзине</p><button data-id="@item.Id" class="primary-btn" onclick="addInBasket(@item.Id)">+</button></div>
+					}
+					else
+					{
+						<button class="primary-btn" data-id="@item.Id" type="button" onclick="addInBasket(@item.Id)">В корзину</button>
+						<a class="primary-btn" asp-action="Buy" asp-controller="Basket" asp-route-id="@item.Id">Купить сейчас</a>
+					}
+				}
+
+			</div>
+		</div>
+	}
+}
+else
+{
+	<div class="no-data-msg">Нет товаров по данным поиска</div>
+}

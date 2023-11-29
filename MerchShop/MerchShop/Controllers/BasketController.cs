@@ -32,6 +32,7 @@ namespace IvanovaShop.Controllers
 			_basket = HttpContext.Session.Get<Basket>("Basket");
 			return View(_basket);
 		}
+
 		public IActionResult Buy(int id)
 		{
 			var product = _db.Products.Where(s => s.Id == id).SingleOrDefault();
@@ -46,7 +47,7 @@ namespace IvanovaShop.Controllers
 				Sum=product.Price
 				
 			};
-			return View(_basket);
+			return View("Order", basket);
 		}
 		[HttpPost]
 		public IActionResult Finaly(string firstName, string lastName, string patrinymic, string email, string tel)

@@ -3,9 +3,7 @@
 @{
 	ViewData["Title"] = Model.Product.Name;
 }
-<div class="main-img-bg">
-	<img src="~/img/bg.jpg" alt="Баннер" />
-</div>
+
 <ul class="breadcrumbs">
 	<li><a asp-controller="Home" asp-action="Index">Главная</a></li>
 	<li>
@@ -80,7 +78,7 @@ else
 				else
 				{
 					<button class="primary-btn" data-id="@Model.Product.Id" type="button" onclick="addInBasket(@Model.Product.Id)">В корзину</button>
-					<button class="primary-btn">Купить сейчас</button>
+					<a class="primary-btn" asp-action="Buy" asp-controller="Basket" asp-route-id="@Model.Product.Id">Купить сейчас</a>
 				}
 			}
 

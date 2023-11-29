@@ -3,52 +3,181 @@
 @model AllProductsData
 @{
 	ViewData["Title"] = "Магазин";
+	Dictionary<string, string> colors = new Dictionary<string, string>
+	{
+		{"бел","#fff"},
+		{"черн","#000"},
+		{"красн","#ff1100"},
+		{"оранж","#ff7700"},
+		{"желт","#fff700"},
+		{"зелен","#1eff00"},
+		{"голуб","#00ffff"},
+		{"син","#0800ff"},
+		{"фиолетов","#a600ff"},
+		{"розов","#ff00c3"},
+	};
 }
+
 <div class="main-img-bg">
 	<img src="~/img/bg.jpg" alt="Баннер" />
 </div>
-<div class="content-wrapper text-center w-80 m-a">
+<div class="content-wrapper text-center w-100 m-a">
 
 	@if (Model != null)
 	{
+		<form class="sort-wrapper" action="~/Home/Index" id="searchSortForm">
+			<p class="sort-item">
+				Сортирвка по цене
+				<button class="primary-btn sort-btn sort-price" onclick="sortPriceFunc()" type="button"></button>
+				<input class="sortPrice visually-hidden" id="sortPrice" type="number" value="@Model.SortPrice" />
+				<span id="sortPriceText">@(Model.SortPrice > 0 ? "По возрастанию" : Model.SortPrice < 0 ? "По убыванию" : "Нет")</span>
+			</p>
+			<p class="sort-item">
+				Сортирвка по названию
+				<button class="primary-btn sort-btn sort-name" onclick="sortNameFunc()" type="button"></button>
+				<input class="sortName visually-hidden" id="sortName" type="number" value="@Model.SortName" />
+				<span id="sortNameText">@(Model.SortName > 0 ? "По возрастанию" : Model.SortName < 0 ? "По убыванию" : "Нет")</span>
+			</p>
+			<p class="sort-item sort-search">
+				<input class="search" name="search" id="search" value="@Model.Search" />
+				<button class="primary-btn search-btn"><img width="25" height="25" src="~/img/search.svg" /></button>
+			</p>
+			<input class="visually-hidden" name="sort" id="sortVal" value="@Model.Sort" />
+			<input class="visually-hidden" name="category" id="categoryVal" value="@Model.ChooseCategory" />
+			
+				<input class="visually-hidden" name="color" id="colorVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Цвет").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="minPrice" id="minPriceVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Минимальная цена").FirstOrDefault()?.ValueInt" />
+				<input class="visually-hidden" name="maxPrice" id="maxPriceVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Максимальная цена").FirstOrDefault()?.ValueInt" />
+				<input class="visually-hidden" name="size" id="sizeVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Размер").FirstOrDefault()?.ValueInt" />
+				<input class="visually-hidden" name="material" id="materialVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Материал").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="gender" id="genderVal" value="@Model.ChooseFilters.Where(s=>s.Name==@"Пол").FirstOrDefault()?.ValueBool" />
+				<input class="visually-hidden" name="weight" id="weightVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Вес").FirstOrDefault()?.ValueDouble" />
+				<input class="visually-hidden" name="productType" id="prodTypeVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Тип").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="lockType" id="lockTypeVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Тип замка").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="genre" id="genreVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Жанр").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="appointment" id="appointmentVal" value="@Model.ChooseFilters.Where(s=>s.Name=="Назначение").FirstOrDefault()?.Value" />
+				<input class="visually-hidden" name="year" id="yearVal" type="date" value="@Model.ChooseFilters.Where(s=>s.Name=="Год").FirstOrDefault()?.ValueDate.Date.ToString("yyyy-MM-dd")" />
+		</form>
 		<div class="filter">
+
+			Фильтры
+			@foreach (var item in Model.Filters)
+			{
+				<div class="filter-item">
+					<p>@item.Name</p>
+					@switch (@item.Name)
+					{
+						case "Цвет":
+
+							<div class="d-flex flex-wrap">
+								@foreach (var color in item.Value.GroupBy(s => s))
+								{
+									string colorStyles = "";
+									foreach (var colorStyle in colors)
+									{
+										if (color.Key.ToLower().Contains(colorStyle.Key.ToLower()))
+										{
+											colorStyles = colorStyle.Key;
+											break;
+										}
+									}
+
+
+
+									<button class="primary-btn filterBtn  colorFilter" style="background-color: @colors.GetValueOrDefault(colorStyles); " onclick="colorValFunc('@item.Value.Where(s => s.ToLower().Contains(colorStyles.ToLower())).FirstOrDefault()',$(this))"></button>
+								}
+							</div>
+							break;
+						case "Цена":
+							<label>От</label>
+							<input type="number" value="@(Model.ChooseFilters.Where(s=>s.Name=="Минимальная цена").FirstOrDefault()?.ValueInt!=null?Model.ChooseFilters.Where(s=>s.Name=="Минимальная цена").FirstOrDefault()?.ValueInt:@item.ValueInt.Min())" onchange="minPriceValFunc($(this))">
+							<label>До</label>
+							<input type="number" value="@(Model.ChooseFilters.Where(s=>s.Name=="Максимальная цена").FirstOrDefault()?.ValueInt!=null?Model.ChooseFilters.Where(s=>s.Name=="Максимальная цена").FirstOrDefault()?.ValueInt:@item.ValueInt.Max())" onchange="maxPriceValFunc($(this))">
+							break;
+						case "Размер":
+							foreach (var size in item.ValueInt.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn sizeFilter" onclick="sizeValFunc(@size.Key,$(this))">@size.Key</button>
+							}
+							break;
+						case "Материал":
+							foreach (var material in item.Value.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn materialFilter" onclick="materialValFunc('@material.Key',$(this))">@material.Key</button>
+							}
+							break;
+						case "Пол":
+							foreach (var gender in item.ValueBool.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn genderFilter" onclick="genderValFunc('@gender.Key',$(this))">@(gender.Key ? "Ж" : "М")</button>
+							}
+							break;
+						case "Вес":
+							foreach (var weight in item.ValueDouble.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn weightFilter" onclick="weightValFunc('@weight.Key.ToString().Replace(',','.')',$(this))">@weight.Key</button>
+							}
+							break;
+						case "Тип":
+							foreach (var type in item.Value.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn prodTypeVal" onclick="typeValFunc('@type.Key',$(this))">@type.Key</button>
+							}
+							break;
+						case "Тип замка":
+							foreach (var lockType in item.Value.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn lockTypeFilter" onclick="lockTypeValFunc('@lockType.Key',$(this))">@lockType.Key</button>
+							}
+							break;
+						case "Жанр":
+							foreach (var genre in item.Value.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn genreFilter" onclick="genreValFunc('@genre.Key',$(this))">@genre.Key</button>
+							}
+							break;
+						case "Назначение":
+							foreach (var appointment in item.Value.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn appointmentFilter" onclick="appointmentValFunc('@appointment.Key',$(this))">@appointment.Key</button>
+							}
+							break;
+						case "Год":
+							foreach (var year in item.ValueDate.GroupBy(s => s))
+							{
+								<button class="primary-btn filterBtn yearFilter" onclick="yearValFunc('@year.Key.Date.ToString("yyyy-MM-dd")',$(this))">@year.Key.Year</button>
+							}
+							break;
+						default:
+							break;
+
+					}
+
+				</div>
+
+			}
+			@if (Model.Filters.Count > 0)
+			{
+				<button class="primary-btn w-100 mb-2 mt-2" onclick="filterFunc()">Применить</button>
+				<button class="primary-btn w-100" onclick="filterClearFunc()">Очистить</button>
+			}
+
+		</div>
+
+		<div class="card-list home-card-list" id="homeCardList">
+			@{
+				await Html.RenderPartialAsync("_partialProductCard", @Model);
+			}
+		</div>
+		<div class="filter">
+			Категории
 			@foreach (var item in Model.Categories)
 			{
-				<button class="filter-item">@item.Name</button>
+				<button class="filter-item" onclick="categoryFunc(@item.Id)">@item.Name</button>
 			}
-		</div>
-		<div class="card-list home-card-list">
-			@foreach (var item in Model.Products)
-			{
-				<div class="card">
-					<a asp-action="Product" asp-controller="Home" asp-route-id="@item.Id">
-						<div class="card-img">
-							<img src="~/img/@item.Image" width="100" height="100" />
 
-						</div>
-						<p>Имя: @item.Name</p>
-						<p>Цена: @item.Price</p>
-						<p>Артикул: @item.Id </p>
-					</a>
-					<div class="button-wrapper" id="buttonWrapper@(item.Id)">
-						@if (Model.basket != null)
-						{
-							if (Model.basket.Contains(item))
-							{
-								<div class="button-wrapper-row"><button data-id="@item.Id" class="primary-btn" onclick="removeOutBasket(@item.Id)">-</button><p class="button-basket-text">Уже в корзине</p><button data-id="@item.Id" class="primary-btn" onclick="addInBasket(@item.Id)">+</button></div>
-							}
-							else
-							{
-								<button class="primary-btn" data-id="@item.Id" type="button" onclick="addInBasket(@item.Id)">В корзину</button>
-								<button class="primary-btn">Купить сейчас</button>
-							}
-						}
-						
-					</div>
-				</div>
-			}
-		</div>
 
+		</div>
 	}
 	else
 	{
@@ -105,7 +234,7 @@
 
 						}
 					});
-					
+
 				}
 
 			}
@@ -136,5 +265,151 @@
 
 			}
 		});
+	}
+
+	function sortPriceFunc() {
+		let val = $('#sortPrice').val();
+		if (val == 0) {
+			$('#sortPrice').val(1);
+			$('#sortPriceText').html("По возрастанию")
+		}
+		else if (val == 1) {
+			$('#sortPrice').val(-1);
+			$('#sortPriceText').html("По убыванию")
+		}
+		else if (val == -1) {
+			$('#sortPrice').val(0);
+			$('#sortPriceText').html("Нет")
+		}
+		if ($('#sortPrice').val() > 0) {
+			$("#sortVal").val('price')
+		}
+		if ($('#sortPrice').val() == 0) {
+			$("#sortVal").val('')
+		}
+		if ($('#sortPrice').val() < 0) {
+			$("#sortVal").val('priceDesc')
+		}
+
+		$('#searchSortForm').submit();
+	}
+	function sortNameFunc() {
+		let val = $('#sortName').val();
+		if (val == 0) {
+			$('#sortName').val(1);
+			$('#sortNameText').html("По возрастанию")
+		}
+		else if (val == 1) {
+			$('#sortName').val(-1);
+			$('#sortNameText').html("По убыванию")
+		}
+		else if (val == -1) {
+			$('#sortName').val(0);
+			$('#sortNameText').html("Нет")
+		}
+		if ($('#sortName').val() > 0) {
+			$("#sortVal").val('name')
+		}
+		if ($('#sortName').val() == 0) {
+			$("#sortVal").val('')
+		}
+		if ($('#sortName').val() < 0) {
+			$("#sortVal").val('nameDesc')
+		}
+
+		$('#searchSortForm').submit();
+	}
+
+	function categoryFunc(id) {
+		$("#categoryVal").val(id)
+		$('#searchSortForm').submit();
+	}
+
+	function colorValFunc(colorStyles, e) {
+
+		$('#colorVal').val(colorStyles);
+		$('.colorFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function minPriceValFunc(e) {
+		$('#minPriceVal').val(e.val())
+	}
+	function maxPriceValFunc(e) {
+		$('#maxPriceVal').val(e.val())
+	}
+	function sizeValFunc(size, e) {
+		$('#sizeVal').val(size)
+		$('.sizeFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function materialValFunc(size, e) {
+		$('#materialVal').val(size);
+		$('.materialFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function weightValFunc(weight, e) {
+		$('#weightVal').val(weight)
+		$('#weightVal').val(weight)
+		$('.weightFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function typeValFunc(type, e) {
+		$('#prodTypeVal').val(type)
+		$('.prodTypeVal').removeClass('active');
+		$(e).addClass('active');
+	}
+	function lockTypeValFunc(lockType, e) {
+		$('#lockTypeVal').val(lockType)
+		$('.lockTypeFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function genreValFunc(genre, e) {
+		$('#genreVal').val(genre)
+		$('.genreFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function genderValFunc(gender, e) {
+		$('#genderVal').val(gender);
+		$('.genderFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function appointmentValFunc(appointment, e) {
+		$('#appointmentVal').val(appointment);
+		$('.appointmentFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function yearValFunc(year, e) {
+		$('#yearVal').val(year);
+		$('.yearFilter').removeClass('active');
+		$(e).addClass('active');
+	}
+	function filterFunc() {
+		$('#searchSortForm').submit();
+
+	}
+
+	function filterClearFunc() {
+		$('#yearVal').val(null);
+		$('#appointmentVal').val(null);
+		$('#genderVal').val(null);
+		$('#genreVal').val(null);
+		$('#lockTypeVal').val(null);
+		$('#prodTypeVal').val(null);
+		$('#weightVal').val(null);
+		$('#materialVal').val(null);
+		$('#sizeVal').val(null);
+		$('#maxPriceVal').val(null)
+		$('#minPriceVal').val(null)
+		$('#colorVal').val(null);
+		$('.yearFilter').removeClass('active');
+		$('.appointmentFilter').removeClass('active');
+		$('.genderFilter').removeClass('active');
+		$('.genreFilter').removeClass('active');
+		$('.lockTypeFilter').removeClass('active');
+		$('.prodTypeVal').removeClass('active');
+		$('.weightFilter').removeClass('active');
+		$('.materialFilter').removeClass('active');
+		$('.sizeFilter').removeClass('active');
+		$('.colorFilter').removeClass('active');
 	}
 </script>

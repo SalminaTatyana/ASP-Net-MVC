@@ -40,6 +40,7 @@
     padding: 5px 15px;
     color: $black;
     font-size: 20px;
+    text-align: center;
 
     &:hover, &:focus {
         background-color: $black;
@@ -50,7 +51,59 @@
         background-color: $disabled;
         border-color: $disabled;
     }
+
+    &.filterBtn {
+        padding: 2px;
+        font-size: 14px;
+        margin-bottom: 5px;
+
+        &.active {
+            border: 5px solid $yellow !important;
+            background-color: white;
+
+            &:hover, &:focus {
+                background-color: $yellow;
+            }
+        }
+
+        &.colorFilter {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            margin-right: 5px;
+        }
+    }
 }
 .button-basket-text {
     color: white;
+}
+
+.search-btn {
+    padding: 2px;
+    border: 2px solid $yellow;
+}
+.sort-btn {
+    padding: 2px;
+    border: 2px solid $yellow;
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    &.sort-price {
+        background-image: url('../img/arrow-up-1-9.svg');
+
+        &.reverse {
+            background-image: url('../img/arrow-up-9-1.svg');
+        }
+    }
+
+    &.sort-name {
+        background-image: url('../img/arrow-up-z-a.svg');
+
+        &.reverse {
+            background-image: url('../img/arrow-up-a-z.svg');
+        }
+    }
 }

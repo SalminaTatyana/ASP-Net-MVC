@@ -57,8 +57,11 @@
 		</nav>
 	</header>
 	<div class="">
+		<span class="loader"></span>
 		<main role="main" class="pb-3">
+
 			@RenderBody()
+
 		</main>
 	</div>
 
@@ -79,6 +82,26 @@
             }).fail(function (data) {
                 $('#basketCount').html('0');
             });
+
+			 function Loader(b) {
+            if (typeof b === "boolean") {
+                if (b == true) $('.loader').fadeIn(10);
+                else $('.loader').fadeOut(10);
+            } else $('.loader').fadeToggle(10);
+        }
+
+        
+       
+
+        window.onbeforeunload = function () {
+            $('.loader').fadeIn(10);
+            setTimeout(function () {
+                Loader(false);
+            }, 105000); //hide loader
+        };
+        window.addEventListener("unload", function () {
+            Loader(false);
+        });
 	</script>
 </body>
 </html>
