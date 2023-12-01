@@ -1,18 +1,28 @@
+using IvanovaShop;
 using IvanovaShop.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
+using IvanovaShop.Data;
+using IvanovaShop.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages();
-// получаем строку подключения из файла конфигурации
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-// добавляем контекст ApplicationContext в качестве сервиса в приложение
-builder.Services.AddDbContext<IvanovaShop.IvanovaShopContext>(options => options.UseSqlServer(connection));
-var services = builder.Services;
-services.AddControllersWithViews().AddRazorRuntimeCompilation().AddSessionStateTempDataProvider();
-services.AddControllersWithViews().AddRazorRuntimeCompilation();
-builder.Services.AddDistributedMemoryCache();
+string connectionIdentity = builder.Configuration.GetConnectionString("IvanovaIdentityShopContextConnection");
 
-builder.Services.AddSession();
+builder.Services.AddDbContext<IvanovaIdentityShopContext>(options =>
+    options.UseSqlServer(connectionIdentity));
+
+builder.Services.AddDefaultIdentity<IvanovaIdentityShopUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<IvanovaIdentityShopContext>();
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ApplicationContext пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+var services = builder.Services;
+services.AddRazorPages();
+services.AddDbContext<IvanovaShop.IvanovaShopContext>(options => options.UseSqlServer(connection));
+services.AddControllersWithViews().AddRazorRuntimeCompilation().AddSessionStateTempDataProvider();
+services.AddDistributedMemoryCache();
+services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,7 +38,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 app.UseSession();
 
 app.MapControllerRoute(

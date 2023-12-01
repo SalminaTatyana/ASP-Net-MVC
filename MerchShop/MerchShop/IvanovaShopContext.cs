@@ -93,8 +93,13 @@ public partial class IvanovaShopContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Login)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Patronymic)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
@@ -115,5 +120,5 @@ public partial class IvanovaShopContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
-	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
