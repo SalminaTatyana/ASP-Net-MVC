@@ -1,44 +1,62 @@
 ﻿@model IvanovaShop.Models.RegisterViewModel
-<h2>Регистрация нового пользователя</h2>
-<form method="post" asp-controller="Account" asp-action="Register">
+@{
+    ViewData["Title"] = "Регистрация нового пользователя";
+}
+
+<ul class="breadcrumbs">
+    <li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+    <li>
+        <a class="active">@ViewData["Title"]</a>
+    </li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Login" asp-action="Register" class="card login-card">
     <div asp-validation-summary="ModelOnly"></div>
-    
+    <div>
+        <label asp-for="UserName"></label><br />
+        <input asp-for="UserName" required />
+        <span asp-validation-for="UserName"></span>
+    </div>
     <div>
         <label asp-for="FirstName"></label><br />
-        <input asp-for="FirstName" />
+        <input asp-for="FirstName" required />
         <span asp-validation-for="FirstName"></span>
     </div>
     <div>
         <label asp-for="SecondName"></label><br />
-        <input asp-for="SecondName" />
+        <input asp-for="SecondName" required />
         <span asp-validation-for="SecondName"></span>
     </div>
     <div>
-        <label asp-for="Patronymic"></label><br />
-        <input asp-for="Patronymic" />
-        <span asp-validation-for="Patronymic"></span>
+        <label asp-for="Patronimyc"></label><br />
+        <input asp-for="Patronimyc" required />
+        <span asp-validation-for="Patronimyc"></span>
     </div>
     <div>
         <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
+        <input asp-for="Email" required />
         <span asp-validation-for="Email"></span>
     </div>
     <div>
         <label asp-for="Phone"></label><br />
-        <input asp-for="Phone" />
+        <input asp-for="Phone" required />
         <span asp-validation-for="Phone"></span>
     </div>
     <div>
         <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
+        <input asp-for="Password" required />
         <span asp-validation-for="Password"></span>
     </div>
     <div>
         <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
+        <input asp-for="PasswordConfirm" required />
         <span asp-validation-for="PasswordConfirm"></span>
     </div>
     <div>
         <input class="primary-btn" type="submit" value="Регистрация" />
+        <p>Уже есть аккаунт?</p>
+        <a class="primary-btn" asp-action="Login" asp-controller="Login">Авторизироваться</a>
+
     </div>
 </form>

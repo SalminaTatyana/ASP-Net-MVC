@@ -1,6 +1,8 @@
 ﻿using IvanovaShop;
+using IvanovaShop.Areas.Identity.Data;
 using IvanovaShop.Models;
 using MerchShop.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -15,11 +17,14 @@ namespace MerchShop.Controllers
         private readonly ILogger<HomeController> _logger;
         private List<ProductModel> _product;
         private IvanovaShopContext _db;
-        public HomeController(ILogger<HomeController> logger, IvanovaShopContext db)
+        private readonly UserManager<IvanovaIdentityShopUser> _userManager;
+        private readonly SignInManager<IvanovaIdentityShopUser> _signInManager;
+        public HomeController(ILogger<HomeController> logger, IvanovaShopContext db, UserManager<IvanovaIdentityShopUser> userManager, SignInManager<IvanovaIdentityShopUser> signInManager)
         {
             _logger = logger;
             _db = db;
-
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
         [HttpGet]
 
@@ -33,6 +38,8 @@ namespace MerchShop.Controllers
             if (HttpContext.Session.Get<Basket>("Basket") == null)
                 HttpContext.Session.Set<Basket>("Basket", new Basket());
             AllProductsData model = new AllProductsData();
+            
+           
             model.ChooseFilters = new List<ChooseFilter>();
 			var products = _db.Products.AsQueryable();//select * from dbo.Products
             if (!string.IsNullOrWhiteSpace(sort))

@@ -9,5 +9,8 @@ namespace IvanovaShop.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the IvanovaIdentityShopUser class
 public class IvanovaIdentityShopUser : IdentityUser
 {
+    public string FirstName { get; set; }
+    public string SecondName { get; set; }
+    public string Patronimyc { get; set; }
 }
 

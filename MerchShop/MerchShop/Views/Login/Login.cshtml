@@ -1,24 +1,37 @@
 ﻿@model IvanovaShop.Models.LoginViewModel
 
-<h2>Вход в приложение</h2>
-<form method="post" asp-controller="Account" asp-action="Login"
+@{
+    ViewData["Title"] = "Войти";
+}
+
+<ul class="breadcrumbs">
+    <li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+    <li>
+        <a class="active">@ViewData["Title"]</a>
+    </li>
+</ul>
+<h1 class="block-title">@ViewData["Title"]</h1>
+
+<form method="post" asp-controller="Login" asp-action="Login" class="card login-card"
       asp-route-returnUrl="@Model.ReturnUrl">
     <div asp-validation-summary="ModelOnly"></div>
     <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" required />
+        <span asp-validation-for="Name"></span>
     </div>
     <div>
         <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
+        <input asp-for="Password" required />
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
+    @*<div>
         <label asp-for="RememberMe"></label><br />
         <input asp-for="RememberMe" />
-    </div>
+    </div>*@
     <div>
-        <input type="submit" value="Войти" />
+        <input class="primary-btn" type="submit" value="Войти" />
+        <p>Нет аккаунта?</p>
+        <a class="primary-btn" asp-action="Register" asp-controller="Login">Зарегистрироваться</a>
     </div>
 </form>

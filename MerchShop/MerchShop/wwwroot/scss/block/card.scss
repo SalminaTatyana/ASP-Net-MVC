@@ -119,3 +119,21 @@
     background-color: transparent;
     border: none;
 }
+
+.login-card {
+    margin: auto;
+
+    input {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .primary-btn {
+        min-width: 250px;
+        margin-left: 0;
+        margin-bottom: 10px;
+        display: block;
+    }
+}

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using IvanovaShop.Data;
 using IvanovaShop.Areas.Identity.Data;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 // �������� ������ ����������� �� ����� ������������
@@ -14,8 +15,16 @@ string connectionIdentity = builder.Configuration.GetConnectionString("IvanovaId
 builder.Services.AddDbContext<IvanovaIdentityShopContext>(options =>
     options.UseSqlServer(connectionIdentity));
 
-builder.Services.AddDefaultIdentity<IvanovaIdentityShopUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<IvanovaIdentityShopContext>();
+builder.Services.AddDefaultIdentity<IvanovaIdentityShopUser>(opts => {
+    
+    opts.Password.RequiredLength = 5;   // минимальная длина
+    opts.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+    opts.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+    opts.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+    opts.Password.RequireDigit = false; // требуются ли цифры
+    opts.User.RequireUniqueEmail = true;
+    opts.User.AllowedUserNameCharacters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNMйцукенгшщзхъфывапролджэячсмитьбю.@ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ'";
+}).AddEntityFrameworkStores<IvanovaIdentityShopContext>();
 // ��������� �������� ApplicationContext � �������� ������� � ����������
 var services = builder.Services;
 services.AddRazorPages();
